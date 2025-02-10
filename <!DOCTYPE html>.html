@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edilson Shop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #d13636;
+        }
+
+        .header {
+            background-color: #1a1917;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            background-color: #333;
+            padding: 10px;
+        }
+
+        .nav a {
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .nav a:hover {
+            background-color: #575757;
+        }
+
+        .products {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .product {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            width: 250px;
+            text-align: center;
+            padding: 20px;
+            transition: transform 0.3s;
+            perspective: 1500px;
+        }
+
+        .product img {
+            width: 100%;
+            border-radius: 10px;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+
+        .product:hover img {
+            transform: rotateY(15deg);
+        }
+
+        .product h3 {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+
+        .product p {
+            font-size: 16px;
+            color: #777;
+        }
+
+        .product .price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff9800;
+        }
+
+        .product button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .product button:hover {
+            background-color: #45a049;
+        }
+
+        .cart {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #ff9800;
+            padding: 10px 20px;
+            color: white;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .cart:hover {
+            background-color: #f57c00;
+        }
+
+        .cart-info {
+            position: fixed;
+            top: 60px;
+            right: 10px;
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 200px;
+        }
+
+        .cart-info ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .cart-info li {
+            margin: 5px 0;
+        }
+
+        .checkout-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .checkout-modal {
+            background: black;
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+            text-align: center;
+        }
+
+        .checkout-modal h2 {
+            font-size: 24px;
+        }
+
+        .checkout-modal p {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .checkout-modal button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .checkout-modal button:hover {
+            background-color: #45a049;
+        }
+
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>Welcome to Edilson Shop</h1>
+        <p>Your one-stop shop for everything!</p>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav">
+        <a href="#">Home</a>
+        <a href="#">Products</a>
+        <a href="#">About Us</a>
+        <a href="#">Contact</a>
+    </div>
+
+    <!-- Product Listings -->
+    <div class="products" id="product-list">
+        <!-- Products will be added here dynamically -->
+    </div>
+
+    <!-- Cart Button -->
+    <div class="cart" id="cart-button">Cart (0)</div>
+
+    <!-- Cart Info -->
+    <div class="cart-info" id="cart-info" style="display: none;">
+        <h4>Your Cart</h4>
+        <ul id="cart-items"></ul>
+        <button id="checkout-button">Checkout</button>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="checkout-container" id="checkout-container">
+        <div class="checkout-modal">
+            <h2>Order Summary</h2>
+            <ul id="checkout-items"></ul>
+            <p><strong>Total: $<span id="total-price">0.00</span></strong></p>
+            <button id="confirm-order">Confirm Order</button>
+            <button id="close-checkout">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2025 Edilson Shop. All Rights Reserved.</p>
+    </div>
+
+    <script>
+        // Sample Product Data
+        const products = [
+            { id: 1, name: 'Product 1', price: 29.99, img: 'https://via.placeholder.com/250' },
+            { id: 2, name: 'Product 2', price: 49.99, img: 'https://via.placeholder.com/250' },
+            { id: 3, name: 'Product 3', price: 19.99, img: 'https://via.placeholder.com/250' },
+            { id: 4, name: 'Product 4', price: 39.99, img: 'https://via.placeholder.com/250' },
+        ];
+
+        let cart = [];
+
+        // Function to display products
+        function displayProducts() {
+            const productList = document.getElementById('product-list');
+            productList.innerHTML = '';
+            products.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.classList.add('product');
+                productDiv.innerHTML = `
+                    <img src="${product.img}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>Description of ${product.name}</p>
+                    <div class="price">$${product.price.toFixed(2)}</div>
+                    <button onclick="addToCart(${product.id})">Add to Cart</button>
+                `;
+                productList.appendChild(productDiv);
+            });
+        }
+
+        // Function to add product to the cart
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            cart.push(product);
+            updateCart();
+        }
+
+        // Function to update cart display
+        function updateCart() {
+            const cartButton = document.getElementById('cart-button');
+            cartButton.textContent = `Cart (${cart.length})`;
+
+            const cartInfo = document.getElementById('cart-info');
+            const cartItems = document.getElementById('cart-items');
+            cartItems.innerH
